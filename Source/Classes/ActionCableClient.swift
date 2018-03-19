@@ -90,12 +90,11 @@ open class ActionCableClient {
     ///  ```swift
     ///  let client = ActionCableClient(URL: NSURL(string: "ws://localhost:3000/cable")!)
     ///  ```
-
-  public required init(url: URL) {
+    public required init(url: URL) {
         /// Setup Initialize Socket
         socket = WebSocket(url: url)
         setupWebSocket()
-}
+    }
     
     public required init(url: URL, headers: [String: String]? = nil, origin : String? = nil) {
         /// Setup Initialize Socket
