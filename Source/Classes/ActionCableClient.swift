@@ -228,10 +228,10 @@ extension ActionCableClient {
         var channelUID = name
         
         //if identifier isn't empty, fetch the first value as the channel unique identifier
-        if let dictionary = identifier?.first {
-            channelUID = dictionary.value as! String
+        if let channelId = identifier?["channel"] as? String {
+            channelUID = channelId
         }
-		
+
         // Look in existing channels and return that
         if let channel = channels[channelUID] { return channel }
         
