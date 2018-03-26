@@ -163,7 +163,6 @@ open class ActionCableClient {
         // First let's see if we can even encode this data
         
         let JSONString = try JSONSerializer.serialize(channel, command: command, data: data)
-        
         //
         // If it's a message, let's see if we are subscribed first.
         //
