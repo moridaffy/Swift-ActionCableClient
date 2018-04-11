@@ -1,0 +1,9 @@
+disabled_rules:
+  - trailing_whitespace
+  - opening_brace
+  - identifier_name
+included: # paths to include during linting. `--path` is ignored if present.
+  - Source
+excluded:
+  - Tests
+
