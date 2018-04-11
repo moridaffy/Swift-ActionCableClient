@@ -483,17 +483,18 @@ extension ActionCableClient {
     }
 }
 
-extension ActionCableClient : CustomDebugStringConvertible {
-    public var debugDescription : String {
+extension ActionCableClient: CustomDebugStringConvertible {
+    public var debugDescription: String {
             return "ActionCableClient(url: \"\(socket.currentURL)\" connected: \(socket.isConnected) id: \(Unmanaged.passUnretained(self).toOpaque()))"
     }
 }
 
-extension ActionCableClient : CustomPlaygroundQuickLookable {
-  public var customPlaygroundQuickLook: PlaygroundQuickLook {
-        return PlaygroundQuickLook.url(socket.currentURL.absoluteString)
+extension ActionCableClient: CustomPlaygroundDisplayConvertible {
+    public var playgroundDescription: Any {
+        return socket.currentURL.absoluteString
     }
 }
+
 
 extension ActionCableClient {
     func copyWithZone(_ zone: NSZone?) -> AnyObject! {
