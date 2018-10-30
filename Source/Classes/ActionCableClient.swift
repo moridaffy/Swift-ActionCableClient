@@ -29,7 +29,8 @@ open class ActionCableClient {
   
     //MARK: Socket
     fileprivate(set) var socket : WebSocket
-    
+    fileprivate let queue = DispatchQueue(label: "Action_Cable_Client_Queue")
+
     /// Reconnection Strategy
     ///
     /// If a disconnection occurs, reconnnectionStrategy determines and calculates
@@ -438,16 +439,20 @@ extension ActionCableClient {
                     }
                 }
             case .confirmSubscription:
-                if let channel = unconfirmedChannels.removeValue(forKey: message.channelName!) {
-                    self.channels.updateValue(channel, forKey: channel.uid)
-                    
-                    // Notify Channel
-                    channel.onMessage(message)
-                    
-                    if let callback = onChannelSubscribed {
-                        DispatchQueue.main.async(execute: { callback(channel) })
+                
+                queue.sync {    //  To avoid Swift Race Access issue for multi-threading
+                    if let channel = unconfirmedChannels.removeValue(forKey: message.channelName!) {
+                        self.channels.updateValue(channel, forKey: channel.uid)
+                        
+                        // Notify Channel
+                        channel.onMessage(message)
+                        
+                        if let callback = onChannelSubscribed {
+                            DispatchQueue.main.async(execute: { callback(channel) })
+                        }
                     }
                 }
+
             case .rejectSubscription:
                 // Remove this channel from the list of unconfirmed subscriptions
                 if let channel = unconfirmedChannels.removeValue(forKey: message.channelName!) {
