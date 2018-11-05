@@ -29,8 +29,8 @@ open class ActionCableClient {
   
     //MARK: Socket
     fileprivate(set) var socket : WebSocket
-    fileprivate let queue = DispatchQueue(label: "Action_Cable_Client_Queue")
-
+    fileprivate let queue = DispatchQueue(label: "Custom_Queue")
+    
     /// Reconnection Strategy
     ///
     /// If a disconnection occurs, reconnnectionStrategy determines and calculates
@@ -420,6 +420,8 @@ extension ActionCableClient {
     }
     
     fileprivate func onMessage(_ message: Message) {
+        
+        queue.sync {
             switch(message.messageType) {
             case .unrecognized:
                 break
@@ -430,26 +432,30 @@ extension ActionCableClient {
                     DispatchQueue.main.async(execute: callback)
                 }
             case .message:
+
                 if let channel = channels[message.channelName!] {
                     // Notify Channel
                     channel.onMessage(message)
                     
                     if let callback = onChannelReceive {
-                        DispatchQueue.main.async(execute: { callback(channel, message.data, message.error) } )
+                        DispatchQueue.main.async(execute: {  [weak self]  in
+                            guard let weakSelf = self else { return }
+                            if weakSelf.onChannelReceive != nil {
+                                callback(channel, message.data, message.error)
+                            }
+                        } )
                     }
                 }
             case .confirmSubscription:
                 
-                queue.sync {    //  To avoid Swift Race Access issue for multi-threading
-                    if let channel = unconfirmedChannels.removeValue(forKey: message.channelName!) {
-                        self.channels.updateValue(channel, forKey: channel.uid)
-                        
-                        // Notify Channel
-                        channel.onMessage(message)
-                        
-                        if let callback = onChannelSubscribed {
-                            DispatchQueue.main.async(execute: { callback(channel) })
-                        }
+                if let channel = unconfirmedChannels.removeValue(forKey: message.channelName!) {
+                    self.channels.updateValue(channel, forKey: channel.uid)
+                    
+                    // Notify Channel
+                    channel.onMessage(message)
+                    
+                    if let callback = onChannelSubscribed {
+                        DispatchQueue.main.async(execute: { callback(channel) })
                     }
                 }
 
@@ -465,13 +471,13 @@ extension ActionCableClient {
                     }
                 }
             case .hibernateSubscription:
-              if let channel = channels.removeValue(forKey: message.channelName!) {
-                // Add channel into unconfirmed channels
-                unconfirmedChannels[channel.uid] = channel
-                
-                // We want to treat this like an unsubscribe.
-                fallthrough
-              }
+                if let channel = channels.removeValue(forKey: message.channelName!) {
+                    // Add channel into unconfirmed channels
+                    unconfirmedChannels[channel.uid] = channel
+                    
+                    // We want to treat this like an unsubscribe.
+                    fallthrough
+                }
             case .cancelSubscription:
                 if let channel = channels.removeValue(forKey: message.channelName!) {
                     
@@ -483,6 +489,7 @@ extension ActionCableClient {
                     }
                 }
             }
+        }
     }
     
     fileprivate func onData(_ data: Data) {
