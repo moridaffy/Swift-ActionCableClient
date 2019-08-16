@@ -30,7 +30,7 @@ open class ActionCableClient {
     //MARK: Socket
     fileprivate(set) var socket : WebSocket
     fileprivate let queue = DispatchQueue(label: "Custom_Queue")
-    
+
     /// Reconnection Strategy
     ///
     /// If a disconnection occurs, reconnnectionStrategy determines and calculates
@@ -121,7 +121,7 @@ open class ActionCableClient {
             callback()
           }
 
-          ActionCableConcurrentQueue.async {
+          ActionCableSerialQueue.async {
             self.socket.connect()
             self.reconnectionState = nil
           }
@@ -153,7 +153,7 @@ open class ActionCableClient {
               callback()
             }
 
-            ActionCableConcurrentQueue.async {
+            ActionCableSerialQueue.async {
                 self.socket.connect()
             }
         }
@@ -407,7 +407,7 @@ extension ActionCableClient {
     }
 
     fileprivate func onText(_ text: String) {
-        ActionCableConcurrentQueue.async(execute: { () -> Void in
+        ActionCableSerialQueue.async(execute: { () -> Void in
             do {
                 let message = try JSONSerializer.deserialize(text)
                 self.onMessage(message)
@@ -418,7 +418,7 @@ extension ActionCableClient {
     }
 
     fileprivate func onMessage(_ message: Message) {
-        
+
         queue.sync {
             switch(message.messageType) {
             case .unrecognized:
@@ -445,7 +445,7 @@ extension ActionCableClient {
                     }
                 }
             case .confirmSubscription:
-                
+
                 if let channel = unconfirmedChannels.removeValue(forKey: message.channelName!) {
                     self.channels.updateValue(channel, forKey: channel.uid)
 
@@ -472,7 +472,7 @@ extension ActionCableClient {
                 if let channel = channels.removeValue(forKey: message.channelName!) {
                     // Add channel into unconfirmed channels
                     unconfirmedChannels[channel.uid] = channel
-                    
+
                     // We want to treat this like an unsubscribe.
                     fallthrough
                 }

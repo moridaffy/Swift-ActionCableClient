@@ -1,3 +1,5 @@
+# Has not been updated since cloning in 2018
+
 # ActionCableClient
 
 [![Version](https://img.shields.io/cocoapods/v/ActionCableClient.svg?style=flat)](http://cocoapods.org/pods/ActionCableClient)
@@ -105,7 +107,7 @@ roomChannel.action("speak", ["message": "Hello, World!"])
 // need it can be set here.
 client.origin = "https://domain.tld/"
 
-// If you need any sort of authentication, you 
+// If you need any sort of authentication, you
 // will not have cookies like you do in the browser,
 // so set any headers here.
 //
@@ -122,7 +124,7 @@ client.headers = [
 ```swift
 
 client.onPing = {
-    
+
 }
 
 ```
