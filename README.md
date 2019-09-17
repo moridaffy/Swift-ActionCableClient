@@ -1,11 +1,15 @@
 # ActionCableClient
 
-[![Version](https://img.shields.io/cocoapods/v/ActionCableClient.svg?style=flat)](http://cocoapods.org/pods/ActionCableClient)
+<!-- [![Version](https://img.shields.io/cocoapods/v/ActionCableClient.svg?style=flat)](http://cocoapods.org/pods/ActionCableClient)
 [![License](https://img.shields.io/cocoapods/l/ActionCableClient.svg?style=flat)](http://cocoapods.org/pods/ActionCableClient)
 [![Platform](https://img.shields.io/cocoapods/p/ActionCableClient.svg?style=flat)](http://cocoapods.org/pods/ActionCableClient)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) -->
 
 [ActionCable](https://github.com/rails/rails/tree/master/actioncable) is a new WebSockets server being released with Rails 5 which makes it easy to add real-time features to your app. This Swift client makes it dead-simple to connect with that server, abstracting away everything except what you need to get going.
+
+## Uses
+
+This is maintained and is being used in production in the [About Shout](https://apps.apple.com/us/app/about-shout/id1402799372) app. It is built in iOS 12.2 with Swfit 5 on Xcode 10.3 and used against a Rails 5.1.4 server hosted on Heroku.
 
 ## Installation
 
@@ -16,18 +20,22 @@ To install, simply:
 Add the following line to your `Podfile` and run `pod install`
 
 ```ruby
-pod "ActionCableClient"
+pod 'ActionCableClient', :git => 'https://github.com/Verdad/Swift-ActionCableClient.git', :branch => 'master'
 ```
 
 #### Carthage
 
+##### Not maintained by Verdad as we don't use Carthage. It may or may not work
+
 Add the following to your `Cartfile` and run `carthage update` as normal.
 ```ruby
-github "danielrhodes/Swift-ActionCableClient"
+github "Verdad/Swift-ActionCableClient"
 ```
 
 
 ## Usage
+
+### Usage and the example project are not maintained but it is where we got started
 
 ### Get Started & Connect
 
@@ -105,7 +113,7 @@ roomChannel.action("speak", ["message": "Hello, World!"])
 // need it can be set here.
 client.origin = "https://domain.tld/"
 
-// If you need any sort of authentication, you 
+// If you need any sort of authentication, you
 // will not have cookies like you do in the browser,
 // so set any headers here.
 //
@@ -122,7 +130,7 @@ client.headers = [
 ```swift
 
 client.onPing = {
-    
+
 }
 
 ```
@@ -133,7 +141,11 @@ For more documentation, see the [wiki](https://github.com/danielrhodes/Swift-Act
 
 [Starscream](https://github.com/daltoniam/Starscream): The underlying WebSocket library.
 
-## Author
+## Maintainer
+
+Cameron McCord, cameronmccord2@gmail.com
+
+## Original Author
 
 Daniel Rhodes, rhodes.daniel@gmail.com
 

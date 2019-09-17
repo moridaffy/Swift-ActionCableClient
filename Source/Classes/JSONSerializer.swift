@@ -37,8 +37,13 @@ internal class JSONSerializer {
             }
             
             identifierDict["channel"] = "\(channel.name)"
-            
-            let JSONData = try JSONSerialization.data(withJSONObject: identifierDict, options: JSONSerialization.WritingOptions(rawValue: 0))
+
+            let JSONData: Data
+            if #available(iOS 11.0, *) {
+                JSONData = try JSONSerialization.data(withJSONObject: identifierDict, options: [JSONSerialization.WritingOptions.sortedKeys])
+            } else {
+                JSONData = try JSONSerialization.data(withJSONObject: identifierDict, options: JSONSerialization.WritingOptions(rawValue: 0))
+            }
             guard let identifierString = NSString(data: JSONData, encoding: String.Encoding.utf8.rawValue)
                   else { throw SerializationError.json }
             

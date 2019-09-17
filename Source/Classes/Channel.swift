@@ -232,12 +232,12 @@ extension Channel {
     }
     
     internal func flushBuffer() {
-        ActionCableSerialQueue.sync(execute: {() -> Void in
-            // Bail out if the parent is gone for whatever reason
-            while let action = self.actionBuffer.popLast() {
+        // Bail out if the parent is gone for whatever reason
+        while let action = self.actionBuffer.popLast() {
+            ActionCableSerialQueue.sync(execute: {() -> Void in
                 self.action(action.name, with: action.params)
-            }
-        })
+            })
+        }
     }
 }
 
